@@ -61,3 +61,24 @@ def bookDetails(isbn):
         rating+= review.user_rating
 
     return render_template("BookDetails.html", book=book, reviews=reviews,rating=rating)
+
+@app.route("/BookDetails", methods=["POST"])
+def addReview(isbn):
+    """Add a user review"""
+
+    # Get user rating from form.
+    userRating = request.form.get("userRating")
+
+    # Check if user has reviewed this book before
+    try:
+        if db.execute("SELECT * FROM flights WHERE id = :id", {"id": flight_id}).rowcount == 0:
+            return render_template("error.html", message="No such flight with that id.")
+        db.execute("INSERT INTO passengers (name, flight_id) VALUES (:name, :flight_id)",
+            {"name": name, "flight_id": flight_id})
+        db.commit()
+    except ValueError:
+        return render_template("error.html", message="Invalid flight number.")
+
+    # Make sure flight exists.
+    
+    return render_template("success.html")

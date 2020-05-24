@@ -26,9 +26,10 @@
                     {% endfor %}
             </div><br><br>
             <h3>Add review:</h3>
-            <form action="" method="post">
+            <form action="{{ url_for('addReview'), isbn=book.isbn }}" method="POST">
                 rating (1-5): <input type="text" name="userRating" size="5">
-                <input type="text" name="" id="">
+                <input type="text" name="userReview" placeholder="Type in your review here">
+                <button>Submit</button>
             </form>
 
         </div>

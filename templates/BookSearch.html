@@ -11,7 +11,7 @@
         
         <div class="row">
             <div class="col-12">
-                <form action="">
+                <form action="{{ url_for('search') }}" method="GET">
                     Name:<input name="search" type="text" size="50" placeholder="Enter book ISBN or Author or Title"><br><br>
                     <button>Search</button>
                 </form>
