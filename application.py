@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, session
+from flask import Flask, session, render_template, request
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -23,4 +23,41 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
-    return "Project 1: TODO"
+    return render_template("index.html")
+
+
+@app.route("/search", methods=["POST"])
+def search():
+    """Search for a book by ISBN or Author or Title"""
+
+    # Get form information.
+    query = request.form.get("search")
+    try:
+        # Make sure book exists.
+        if db.execute("SELECT * FROM books WHERE isbn = :isbn OR title = :title OR author = :author", {"isbn": query, "title":query, "author":query}).rowcount == 0:
+            return render_template("error.html", message="That book or author does not exist.")
+        books = db.execute("SELECT * FROM books WHERE isbn = :isbn OR title = :title OR author = :author", {"isbn": query, "title":query, "author":query}).fetchall()
+        return render_template("BookSearch.html", books=books)
+        db.commit()
+    except ValueError:
+        return render_template("error.html", message="Book or Author does not exist.")
+
+    return render_template("success.html")
+
+@app.route("/bookDetails/<str:isbn>")
+def bookDetails(isbn):
+    """Book information"""
+
+    book = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
+    if book is None:
+        return render_template("error.html", message="Book or Author does not exist")
+
+    # Get reviews
+    reviews = db.execute("SELECT * FROM reviews WHERE isbn = :isbn",
+                            {"isbn": isbn}).fetchall()
+    
+    rating = 0
+    for review in reviews:
+        rating+= review.user_rating
+
+    return render_template("BookDetails.html", book=book, reviews=reviews,rating=rating)
