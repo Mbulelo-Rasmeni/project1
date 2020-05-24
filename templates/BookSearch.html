@@ -17,5 +17,19 @@
                 </form>
             </div>
         </div>
+        <div>
+            {% block body %}
+            Search results
+            <ul>
+                {% for book in books %}
+                    <li>
+                        <a href="{{ url_for('bookDetails', isbn=book.isbn) }}"></a>
+                        {{ book.isbn }} {{ book.title }} by {{ book.author }} in {{ book.year}}
+                    </li> 
+                {% endfor %}
+            </ul>
+            {% endblock %}
+        </div>
+    
     </body>
 </html>

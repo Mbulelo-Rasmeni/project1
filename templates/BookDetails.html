@@ -8,19 +8,30 @@
 
     </head>
     <body class="bdy" id="parag">
+        {% block body %}
         <br><br><h1>Book Details</h1><br>
         
         <div class="row">
             <div class="col-12">
-                <form action="">
-                    Title:<input name="title" type="text" placeholder="Book Title"><br><br>
-                    Author:<input name="author" type="text" placeholder="Author"><br><br>
-                    Publication year:<input name="publicationYear" type="text" maxlength="4" placeholder="Year"><br><br>
-                    ISBN:<input name="isbn" type="text" placeholder="ISBN"><br><br>
-                    Average rating:<input name="avgRating" type="text" size="1"><br><br>
-                    <button>Submit</button>
-                </form>
-            </div>
+                    Title:{{ book.title }} <br><br>
+                    Author:{{ book.author }}<br><br>
+                    Publication year:{{ book.year}}<br><br>
+                    ISBN:{{ book.isbn }}<br><br>
+                    Average rating:rating<br><br>
+                    <h3>Reviews:</h3>
+                    {% for review in reviews %}
+                    <li>
+                        {{ review.user_review }} {{ review.user_rating }}
+                    </li> 
+                    {% endfor %}
+            </div><br><br>
+            <h3>Add review:</h3>
+            <form action="" method="post">
+                rating (1-5): <input type="text" name="userRating" size="5">
+                <input type="text" name="" id="">
+            </form>
+
         </div>
+        {% endblock %}
             </body>
 </html>
