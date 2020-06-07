@@ -32,6 +32,10 @@
                 <input type="text" class="form-control" name="isbn" id="isbn" placeholder="{{ book.isbn }}" value="{{ book.isbn }}" readonly>
               </div>
               <div class="form-group">
+                <label for="numberOfRatings">Number of ratings:</label>
+                <input type="text" class="form-control" name="numberOfRatings" id="numberOfRatings" placeholder="{{ rating }}" readonly>
+              </div>
+              <div class="form-group">
                 <label for="rating">Average rating:</label>
                 <input type="text" class="form-control" id="rating" placeholder="{{ rating }}" readonly>
               </div>
@@ -53,12 +57,12 @@
               <button type="submit" class="btn btn-default">Submit</button>
             </form>
           </div>
+          <br><br>
           <div class="container">
             <h3>Reviews:</h3>
             {% for review in reviews %}
-            Rating: {{ review.user_rating }}
                 <li>
-                    {{ review.user_review }} 
+                  {{ review.email }} rated it: {{ review.user_rating }}<br> {{ review.user_review }}<br><hr> 
                 </li> 
             {% endfor %}
 
