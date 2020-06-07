@@ -108,19 +108,29 @@ def BookDetails(isbn):
 @app.route("/review", methods=["POST"])
 def addReview():
 
+    userReview = ""
+    userRating = 0
+
+    print(f"Before checking book reviews")
+
     #Check if the current user has reviewed the book before
     if "user" in session:
-            user = session["user"]
-            book_isbn = request.form['isbn']
-            checkRating = db.execute("SELECT * FROM reviews WHERE email = :email AND isbn = :isbn", {"email": user, "isbn":book_isbn}).fetchall()
-            if checkRating is None:
-                userReview = request.form['userReview']
-                userRating = int(request.form['userRating'])
-                db.execute("INSERT INTO reviews (email, user_review, user_rating, isbn) VALUES (:email, :user_review, :user_rating, :isbn)",{"email": user, "user_review": userReview, "user_rating":userRating, "isbn":book_isbn})
-                db.commit()
-                
-                
-            return render_template("BookSearch.html")
+        print(f"Passed user_session check")
+        user = session["user"]
+        book_isbn = request.form["isbn"]
+        print(f"check current review using data from form {book_isbn} and {user}")
+        #checkRating = db.execute("SELECT * FROM reviews WHERE email LIKE :email AND isbn LIKE :isbn", {"email": user, "isbn":book_isbn}).rowcount == 0:
+        if db.execute("SELECT * FROM reviews WHERE email LIKE :email AND isbn LIKE :isbn", {"email": user, "isbn":book_isbn}).rowcount == 0:
+            print(f"Current review is NONE")
+            userReview = request.form["userReview"]
+            userRating = int(request.form["userRating"])
+            print(f"User rating from form {userRating}")
+            db.execute("INSERT INTO reviews (email, user_review, user_rating, isbn) VALUES (:email, :user_review, :user_rating, :isbn)",{"email": user, "user_review": userReview, "user_rating":userRating, "isbn":book_isbn})
+            db.commit()
+            
+        print(f"Book reviewed by {user}, Review: {userReview} , ISBN: {book_isbn} , Rating : {userRating}")   
+        
+    return render_template("BookSearch.html")
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -130,8 +140,8 @@ def search():
     
     # Get form information.
     if request.method == "POST":
-        #query = request.form['search']
-        #search_query = myorder.format(query)
+        
+        # concetenate wildcard search "%%" with search input
         query = wildcard_search.format(request.form['search'])
 
     try:
