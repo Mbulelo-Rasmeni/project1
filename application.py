@@ -138,3 +138,15 @@ def search():
         return render_template("BookSearch.html", books=books)
     except ValueError:
         return render_template("error.html", message="Book or Author does not exist.")
+
+@app.route("/back",methods=["GET"])
+def back():
+    #Go back to search page
+
+    return render_template("BookSearch.html")
+
+@app.route("/logout",methods=["GET"])
+def logout():
+    #Go back to home page
+
+    return render_template("index.html")
