@@ -126,9 +126,13 @@ def addReview():
 def search():
     """Search for a book by ISBN or Author or Title"""
 
+    wildcard_search = "%{}%"
+    
     # Get form information.
     if request.method == "POST":
-        query = request.form['search']
+        #query = request.form['search']
+        #search_query = myorder.format(query)
+        query = wildcard_search.format(request.form['search'])
 
     try:
         # Make sure book exists.
