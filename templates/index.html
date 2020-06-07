@@ -19,29 +19,47 @@
             }
         </style>
     </head>
-    <body class="bdy" id="parag">
+    <body class="container" id="parag">
         <br><br><h1></h1><br>
         
         <div class="row">
             <div class="col-5">
                 <h2>Register</h2><br>
-                <form class="form-control" action="">
-                    Name:<input name="name" type="text" placeholder="Name"><br><br>
-                    Email:<input name="email" type="text" placeholder="Email"><br><br>
-                    Password:<input name="password" type="password" placeholder="Password"><br><br>
-                    Confirm Password:<input name="confirmPassword" type="password" placeholder="Confirm Password"><br><br>
-                    <button>Submit</button>
+                <form class="form-control" action="{{ url_for('register') }}" method="POST">
+                    <div class="form-group">
+                        <label for="new_name">Name:</label>
+                        <input type="text" class="form-control" name="new_name" id="new_name" placeholder="Name">
+                      </div>
+                    <div class="form-group">
+                        <label for="new_email">Email:</label>
+                        <input type="text" class="form-control" name="new_email" id="new_email" placeholder="Email">
+                      </div>
+                    <div class="form-group">
+                        <label for="new_password">Password:</label>
+                        <input type="password" class="form-control" name="new_password" id="new_password" placeholder="Password">
+                      </div>
+                    <div class="form-group">
+                        <label for="new_confirmPassword">Confirm password:</label>
+                        <input type="text" class="form-control" name="new_confirmPassword" id="new_confirmPassword" placeholder="Confirm password">
+                      </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
                 </form>
             </div>
     
             <div class="col-4">
                 <h2>Login</h2><br>
-                <form class="form-control" action="">
-                    Email:<input name="email" type="text" placeholder="Email"><br><br>
-                    Password:<input name="password" type="password" placeholder="Password"><br><br>
-                    <button>Login</button>
+                <form class="form-control" action="{{ url_for('login') }}" method="POST">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                      </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                      </div>
+                    <button type="submit" class="btn btn-default">Login</button>
                 </form>
             </div>
         </div>
-            </body>
+        </body>
 </html>

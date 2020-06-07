@@ -2,3 +2,4 @@ Flask
 Flask-Session
 psycopg2-binary
 SQLAlchemy
+pip3 install -Iv Werkzeug==0.16.1

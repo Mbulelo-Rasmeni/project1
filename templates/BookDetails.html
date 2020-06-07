@@ -9,30 +9,57 @@
     </head>
     <body class="bdy" id="parag">
         {% block body %}
-        <br><br><h1>Book Details</h1><br>
         
-        <div class="row">
-            <div class="col-12">
-                    Title:{{ book.title }} <br><br>
-                    Author:{{ book.author }}<br><br>
-                    Publication year:{{ book.year}}<br><br>
-                    ISBN:{{ book.isbn }}<br><br>
-                    Average rating:rating<br><br>
-                    <h3>Reviews:</h3>
-                    {% for review in reviews %}
-                    <li>
-                        {{ review.user_review }} {{ review.user_rating }}
-                    </li> 
-                    {% endfor %}
-            </div><br><br>
+        <div class="container">
+            <h2>Book Details</h2>
+            <form action="{{ url_for('addReview') }}" method="POST">
+              <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" class="form-control" id="title" placeholder="{{ book.title}}" readonly>
+              </div>
+              <div class="form-group">
+                <label for="author">Author:</label>
+                <input type="text" class="form-control" id="author" placeholder="{{ book.author }}" readonly>
+              </div>
+              <div class="form-group">
+                <label for="year">Publication year:</label>
+                <input type="text" class="form-control" id="year" placeholder="{{ book.year }}" readonly>
+              </div>
+              <div class="form-group">
+                <label for="isbn">ISBN:</label>
+                <input type="text" class="form-control" name="isbn" id="isbn" placeholder="{{ book.isbn }}" readonly>
+              </div>
+              <div class="form-group">
+                <label for="rating">Average rating:</label>
+                <input type="text" class="form-control" id="rating" placeholder="{{ rating }}" readonly>
+              </div>
+ 
             <h3>Add review:</h3>
-            <form action="{{ url_for('addReview'), isbn=book.isbn }}" method="POST">
-                rating (1-5): <input type="text" name="userRating" size="5">
-                <input type="text" name="userReview" placeholder="Type in your review here">
-                <button>Submit</button>
+              <div class="form-group">
+                <label for="userRating">Rating(1-5):</label>
+                <select name="userRating" id="userRating">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                <textarea class="form-control" id="userReview" rows="10" cols="30" placeholder="Type in your review here"></textarea>
+              </div>
+              <button type="submit" class="btn btn-default">Submit</button>
             </form>
-
+          </div>
+          <div class="container">
+            <h3>Reviews:</h3>
+            {% for review in reviews %}
+            Rating: {{ review.user_rating }}
+                <li>
+                    {{ review.user_review }} 
+                </li> 
+            {% endfor %}
         </div>
         {% endblock %}
-            </body>
+    </body>
 </html>

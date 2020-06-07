@@ -7,24 +7,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body class="bdy" id="parag">
-        <br><br><h1>Books</h1><br>
+        <br><br><h1 style="text-align: center;">Books</h1><br>
         
         <div class="row">
             <div class="col-12">
-                <form action="{{ url_for('search') }}" method="GET">
-                    Name:<input name="search" type="text" size="50" placeholder="Enter book ISBN or Author or Title"><br><br>
-                    <button>Search</button>
+                <form action="{{ url_for('search') }}" method="POST" style="width: 500px; margin:auto">
+                    <input class="form-control" name="search" type="text" size="50" placeholder="Enter book ISBN or Author or Title" style="width: 500px; margin:center"><br>
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </form>
             </div>
         </div>
-        <div>
+        <div style="text-align: center;">
             {% block body %}
-            Search results
+            Search results:
             <ul>
                 {% for book in books %}
                     <li>
-                        <a href="{{ url_for('bookDetails', isbn=book.isbn) }}"></a>
-                        {{ book.isbn }} {{ book.title }} by {{ book.author }} in {{ book.year}}
+                        <a href="{{ url_for('BookDetails', isbn=book.isbn) }}">
+                        {{ book.isbn }} {{ book.title }} by {{ book.author }} in {{ book.year}} </a>
                     </li> 
                 {% endfor %}
             </ul>
