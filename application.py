@@ -28,9 +28,7 @@ def index():
 @app.route("/login",methods=["POST"])
 def login():
 
-   # if session.get("user") is None:
-   #     session["user"] = []
-
+    #Get login information from login form
     if request.method == "POST":
         email = request.form['email']
         password = request.form['password']
@@ -49,11 +47,12 @@ def login():
 @app.route("/register",methods=["POST"])
 def register():
 
+    #Make sure password and confirmed password match
     if request.method == "POST" and request.form['new_password'] == request.form['new_confirmPassword']:
         new_email = request.form['new_email']
         new_password = request.form['new_password']
         try:
-            # Make sure user exists.
+            # Make sure user does not exists.
             if db.execute("SELECT * FROM users WHERE email LIKE :email AND password LIKE :password", {"email": new_email, "password":new_password}).rowcount == 0:
                 name = request.form['new_name']
                 db.execute("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)",{"name": name, "email": new_email, "password":new_password})
@@ -74,7 +73,7 @@ def listAll():
     try:
         # show list of all books.
         if db.execute("SELECT * FROM books ").rowcount == 0:
-            return render_template("error.html", message="That book or author does not exist.")
+            return render_template("error.html", message="The books table is empty")
         books = db.execute("SELECT * FROM books ").fetchall()
         return render_template("BookSearch.html", books=books)
     except ValueError:
@@ -89,16 +88,14 @@ def BookDetails(isbn):
 
     if book is None:
         return render_template("error.html", message="Book or Author does not exist")
-    
+    #Get book reviews from my books web application
     reviews = db.execute("SELECT * FROM reviews WHERE isbn = :isbn",{"isbn": isbn}).fetchall()
 
+    #Get ratings data from Goodreads
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "INaco71gUTAqoo00oGsWAw", "isbns": book.isbn})
     data = res.json()
-    print(data)
     avgRating = data["books"][0]["average_rating"]
     numberOfRatings = data["books"][0]["work_ratings_count"]
-    #avgRating = 2
-    #numberOfRatings = 2
 
     return render_template("BookDetails.html", book=book, reviews=reviews,rating=avgRating, num_ratings=numberOfRatings)
 
@@ -117,9 +114,9 @@ def addReview():
             userRating = int(request.form["userRating"])
             db.execute("INSERT INTO reviews (email, user_review, user_rating, isbn) VALUES (:email, :user_review, :user_rating, :isbn)",{"email": user, "user_review": userReview, "user_rating":userRating, "isbn":book_isbn})
             db.commit()
-            
-        print(f"Book reviewed by {user}, Review: {userReview} , ISBN: {book_isbn} , Rating : {userRating}")   
-        
+    else:
+        return render_template("error.html", message="Please register or login before reviewing a book")
+                    
     return render_template("BookSearch.html")
 
 @app.route("/search", methods=["POST"])
@@ -146,35 +143,13 @@ def search():
 @app.route("/back",methods=["GET"])
 def back():
     #Go back to search page
-
     return render_template("BookSearch.html")
 
 @app.route("/logout",methods=["GET"])
 def logout():
     #Go back to home page
-
+    session.pop("user",None)
     return render_template("index.html")
-
-@app.route("/api/flights/<int:flight_id>")
-def flight_api(flight_id):
-    """Return details about a single flight."""
-
-    # Make sure flight exists.
-    flight = Flight.query.get(flight_id)
-    if flight is None:
-        return jsonify({"error": "Invalid flight_id"}), 422
-
-    # Get all passengers.
-    passengers = flight.passengers
-    names = []
-    for passenger in passengers:
-        names.append(passenger.name)
-    return jsonify({
-            "origin": flight.origin,
-            "destination": flight.destination,
-            "duration": flight.duration,
-            "passengers": names
-        })
 
 @app.route("/api/<string:isbn>")
 def BookAPI(isbn):
@@ -196,9 +171,13 @@ def BookAPI(isbn):
     for review in reviews:
         rating+= review.user_rating
         count+=1
+    
+    if rating == 0:
+        avgRating = 0
+    else:
+        avgRating = int(rating/count)
 
-    avgRating = int(rating/count)
-
+    #Sending JSON object to user
     return jsonify({
             "title": book.title,
             "author": book.author,
